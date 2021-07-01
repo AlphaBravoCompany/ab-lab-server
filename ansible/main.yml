@@ -1,0 +1,12 @@
+---
+- hosts: lab_servers
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: lab_server
+    - role: security
+    - role: docker
+    - role: certbot
+    - role: code-server
+    - role: containers/rancher
+    - role: k3d

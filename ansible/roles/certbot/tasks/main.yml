@@ -1,0 +1,69 @@
+---
+- name: Create ab/certbot directory
+  ansible.builtin.file:
+    path: /ab/certbot
+    state: directory
+    mode: '0755'
+  tags: certbot
+
+- name: Copy nginx config file
+  template:
+    src: "nginx.conf.j2"
+    dest: "/ab/certbot/nginx.conf"
+    owner: root
+    group: root
+    mode: 0755
+  tags: certbot
+
+- name: Copy docker-compose config file
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "/ab/certbot/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0755
+  tags: certbot
+
+- name: Copy cloudflare.ini file
+  ansible.builtin.copy:
+    src: files/{{ deployment_name }}/cloudflare.ini
+    dest: /ab/certbot
+    owner: root
+    group: root
+    mode: '0600'
+  tags: certbot
+
+- name: Copy ssl-dhparams.pem file
+  ansible.builtin.copy:
+    src: files/ssl-dhparams.pem
+    dest: /ab/certbot
+    owner: root
+    group: root
+    mode: '0755'
+  tags: certbot
+
+- name: Create and start certbot container
+  community.docker.docker_compose:
+    project_src: /ab/certbot
+  register: output
+  tags: certbot
+
+- name: Waiting approx 90 seconds for certificate to be created. (It's how the certbot container works, what do you want from me?)
+  wait_for:
+    path: /ab/certbot/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem
+    state: present
+  tags: certbot
+
+- name: Stop certbot container
+  community.docker.docker_compose:
+    project_src: /ab/certbot
+    build: no
+    stopped: yes
+  register: output
+  tags: certbot, certbot-compose-down
+
+- name: Remove file ansible.ini file
+  ansible.builtin.file:
+    path: /ab/certbot/cloudflare.ini
+    state: absent
+  tags: certbot

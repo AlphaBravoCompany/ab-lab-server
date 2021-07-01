@@ -1,0 +1,23 @@
+---
+# Rancher Docker Container
+- name: Create ab/rancher directory
+  ansible.builtin.file:
+    path: /ab/rancher
+    state: directory
+    mode: '0755'
+  tags: rancher
+
+- name: Copy docker-compose config file
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "/ab/rancher/docker-compose.yml"
+    owner: root
+    group: root
+    mode: 0755
+  tags: rancher
+
+- name: Deploy Rancher Docker Compose stack
+  docker_compose:
+    project_src: /ab/rancher/
+  register: output
+  tags: rancher

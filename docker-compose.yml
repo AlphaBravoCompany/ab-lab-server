@@ -1,0 +1,27 @@
+version: "3.8"
+
+networks:
+    default:
+
+services:
+
+    development:
+        image: registry.gitlab.com/alphabravocompany/coder-dev:latest
+
+        cap_add:
+            - NET_ADMIN
+            - NET_RAW
+        environment:
+            AB_EXAMPLE: example
+        networks:
+            default:
+                aliases:
+                    - ab.dev
+                    - ab.test
+        hostname: dev-environment
+        volumes:
+            - type: bind
+              source: ./
+              target: /home/coder/ab
+        working_dir: /home/coder/ab
+        command: tail -f /dev/null

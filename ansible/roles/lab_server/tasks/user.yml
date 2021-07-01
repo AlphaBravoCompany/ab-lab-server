@@ -1,0 +1,35 @@
+---
+- name: Ensure group "addl_admin_user" exists
+  ansible.builtin.group:
+    name: "{{ addl_admin_user }}"
+    state: present
+
+- name: Add an additional user with sudo capabilities
+  user:
+    name: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    groups: sudo
+    append: yes
+    shell: /bin/bash
+    create_home: yes
+
+- name: Add addl_admin_user user to the sudoers
+  copy:
+      dest: "/etc/sudoers.d/{{ addl_admin_user }}"
+      content: "{{ addl_admin_user }}  ALL=(ALL)  NOPASSWD: ALL"
+
+- name: Create directory .ssh
+  ansible.builtin.file:
+    path: "/home/{{ addl_admin_user }}/.ssh"
+    state: directory
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: "0700"
+
+- name: Copy authorized keys to new user
+  copy:
+    src: /root/.ssh/authorized_keys
+    dest: "/home/{{ addl_admin_user }}/.ssh/authorized_keys"
+    remote_src: yes
+    owner: "{{ addl_admin_user }}"
+    mode: "0600"

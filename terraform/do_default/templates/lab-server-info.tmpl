@@ -1,0 +1,12 @@
+This page lists all lab server links for this deployment.
+
+%{ for server in lab_servers ~}
+Hostname: ${server}
+Code-Server:
+https://${server}.${environment_domain}:11443
+Rancher:
+https://${server}.${environment_domain}:12443
+SSH:
+ssh -i ${deployment_name}-private-key.pem root@${server}.${environment_domain}
+
+%{ endfor ~}

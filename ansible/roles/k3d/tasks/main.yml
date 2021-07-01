@@ -1,0 +1,48 @@
+---
+- name: Create ab/labs directory
+  ansible.builtin.file:
+    path: /ab/k3d
+    state: directory
+    mode: '0755'
+  tags: k3d
+
+- name: Download k3d
+  get_url:
+    url : https://raw.githubusercontent.com/rancher/k3d/main/install.sh
+    dest: /ab/k3d/install.sh
+    mode: '+x'
+  tags: k3d
+
+- name: Install k3d
+  become: false
+  shell: /ab/k3d/install.sh >> /ab/k3d/install-log.txt
+  tags: k3d
+
+- name: Adding kubernetes apt-key
+  become: yes
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+  tags: k3d
+
+- name: Adding kubernetes APT repository
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: kubernetes
+    update-cache: yes
+  tags: k3d
+
+- name: deploy k3d cluster
+  ansible.builtin.command: sudo apt-get update -y
+  tags: k3d
+
+- name: Installing kubectl
+  become: yes
+  ansible.builtin.apt:
+    name: kubectl
+    state: present
+    update_cache: yes
+    force_apt_get: yes
+  tags: k3d

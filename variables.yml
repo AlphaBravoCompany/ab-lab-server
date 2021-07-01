@@ -1,0 +1,34 @@
+---
+ansible:
+    user: "root"
+    addl_admin_user: "alphabravo"
+
+aws:
+    bucket_name: "alphabravo-k8s-terraform-states"
+    region: "us-east-1"
+
+cloudflare:
+    provider_source: "cloudflare/cloudflare"
+
+code_server:
+    version: "3.10.2"
+
+environment:
+    systemd_directory: "/etc/systemd/system"
+
+docker:
+    docker_compose_version: "1.29.2"
+
+terraform:
+    backend_type: "s3"
+    backend_directory: "shared"
+    required_version: "0.13"
+
+digitalocean:
+    region: "nyc3"
+    droplet_image: "ubuntu-20-04-x64"
+    lab_droplet_size: "s-8vcpu-16gb-intel"
+    provider_version: "1.22.2"
+    provider_source: "digitalocean/digitalocean"
+    server_count: "2"
+

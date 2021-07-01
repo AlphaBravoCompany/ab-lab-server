@@ -1,0 +1,11 @@
+[Unit]
+Description=code-server
+
+[Service]
+Type=simple
+Environment=PASSWORD={{ code_server_password }}
+ExecStart=/usr/local/bin/code-server --bind-addr 0.0.0.0:11443 --user-data-dir /ab/code-server --auth password --cert /ab/certbot/live/{{ ansible_hostname }}.{{ environment_domain }}/cert.pem --cert-key /ab/certbot/live/{{ ansible_hostname }}.{{ environment_domain }}/privkey.pem
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

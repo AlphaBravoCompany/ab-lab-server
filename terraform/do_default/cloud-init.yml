@@ -1,0 +1,14 @@
+#cloud-config
+
+# Upgrade the instance on first boot
+# (ie run apt-get upgrade)
+#
+# Default: false
+# Aliases: apt_upgrade
+package_upgrade: true
+
+# Set PRIVATE_IP as local variable needed for certain Ansible tasks
+runcmd:
+  - sleep 30s
+  - export PRIVATE_IP=$(curl http://169.254.169.254/metadata/v1/interfaces/private/0/ipv4/address)
+  - echo PRIVATE_IP=$PRIVATE_IP > /etc/environment

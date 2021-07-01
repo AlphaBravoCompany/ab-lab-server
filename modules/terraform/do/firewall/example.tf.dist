@@ -1,0 +1,27 @@
+provider "digitalocean" {
+}
+
+# By default, DigitalOcean's suggested default rules are defined that allow some
+# fundamental traffic. Simply provide an empty value for both inbound_rules and
+# outbound_rules if you wish to overwrite them.
+# https://www.digitalocean.com/docs/networking/firewalls/how-to/create/#default-inbound-rule-ssh
+# https://www.digitalocean.com/docs/networking/firewalls/how-to/create/#default-outbound-rules-permit-all-traffic
+
+module "firewall" {
+  source      = "../../modules/terraform/do/firewall"
+  name        = "${var.deployment_name}-server-fw"
+  droplet_ids = concat(module.k3s-server[*].droplet_id, module.k3s-server-ha[*].droplet_id)
+
+  outbound_rules = []
+  inbound_rules = [{
+    protocol         = "tcp"
+    port_range       = "80"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  },
+  {
+    protocol         = "tcp"
+    port_range       = "443"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  ]
+}

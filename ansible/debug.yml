@@ -1,0 +1,25 @@
+---
+- hosts: k3s_cluster
+  gather_facts: no
+  become: yes
+
+  tasks:
+  - name: Print the master private ip
+    debug:
+      msg: For the init_master node, the private ip is {{ master_ip }}.
+    when: init_master_private_ip is defined
+
+  - name: Print lb ip
+    debug:
+      msg: For the master lb, the ip is {{ cluster_api_lb_ip }}.
+    when: cluster_api_lb_ip is defined
+
+  - name: Print lb dns name
+    debug:
+      msg: For the master lb, the dns name is {{ cluster_api_dns_name }}.
+    when: cluster_api_dns_name is defined
+
+  - name: Print deployment name
+    debug:
+      msg: For the master lb, the dns name is {{ deployment_name }}.
+    when: deployment_name is defined
