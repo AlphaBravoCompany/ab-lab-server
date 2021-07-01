@@ -9,4 +9,5 @@
     - role: certbot
     - role: code-server
     - role: containers/rancher
+    - role: containers/portainer
     - role: k3d

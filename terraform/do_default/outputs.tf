@@ -40,6 +40,7 @@ resource "local_file" "ansible_all" {
       code_server_version = var.code_server_version
       code_server_password = var.code_server_password
       cloudflare_email = var.cloudflare_email
+      portainer_password = var.portainer_password
       }
     )
   filename = "../../ansible/inventory/${var.deployment_name}/group_vars/all.yml"
@@ -70,4 +71,12 @@ resource "local_file" "lab_server_info" {
       }
     )
   filename = "../../ansible/files/${var.deployment_name}/lab-server-info.txt"
+}
+
+resource "local_file" "portainer-password" {
+  content  = templatefile("./templates/portainer-password.tmpl", {
+      portainer_password = var.portainer_password
+      }
+    )
+  filename = "../../ansible/files/${var.deployment_name}/portainer-password.txt"
 }

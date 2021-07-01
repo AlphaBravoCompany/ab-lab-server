@@ -30,5 +30,5 @@ digitalocean:
     lab_droplet_size: "s-8vcpu-16gb-intel"
     provider_version: "1.22.2"
     provider_source: "digitalocean/digitalocean"
-    server_count: "2"
+    server_count: "1"
 
