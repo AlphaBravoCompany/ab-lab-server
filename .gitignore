@@ -20,4 +20,4 @@ passphrase
 *.key
 /ansible/ansible.cfg
 /ssh/*
-*provider.tf
+!/terraform/do_default/provider.tf
