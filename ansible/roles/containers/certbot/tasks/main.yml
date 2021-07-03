@@ -6,6 +6,20 @@
     mode: '0755'
   tags: certbot
 
+- name: Create ab/certs/live directory
+  ansible.builtin.file:
+    path: /ab/certs/live
+    state: directory
+    mode: '0755'
+  tags: certbot
+
+- name: Create ab/certs/archive directory
+  ansible.builtin.file:
+    path: /ab/certs/archive
+    state: directory
+    mode: '0755'
+  tags: certbot
+
 - name: Copy nginx config file
   template:
     src: "nginx.conf.j2"
@@ -42,28 +56,47 @@
     mode: '0755'
   tags: certbot
 
+- name: Check if cert has already been created
+  stat:
+    path: /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem
+  register: certbot
+  tags: certbot
+
 - name: Create and start certbot container
   community.docker.docker_compose:
     project_src: /ab/certbot
   register: output
   tags: certbot
+  when: certbot.stat.exists == false
 
 - name: Waiting approx 90 seconds for certificate to be created. (It's how the certbot container works, what do you want from me?)
   wait_for:
     path: /ab/certbot/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem
     state: present
   tags: certbot
+  when: certbot.stat.exists == False
+
+- name: copy certbot/live
+  ansible.builtin.command: cp -r /ab/certbot/live /ab/certs
+  tags: certbot
+  when: certbot.stat.exists == false
+
+- name: copy certbot/archive
+  ansible.builtin.command: cp -r /ab/certbot/archive /ab/certs
+  tags: certbot
+  when: certbot.stat.exists == false
 
 - name: Stop certbot container
   community.docker.docker_compose:
     project_src: /ab/certbot
     build: no
-    stopped: yes
+    state: absent
   register: output
   tags: certbot, certbot-compose-down
+  when: certbot.stat.exists == False
 
-- name: Remove file ansible.ini file
+- name: Remove certbot directory to hide our tracks, err, for cleanliness...
   ansible.builtin.file:
-    path: /ab/certbot/cloudflare.ini
+    path: /ab/certbot
     state: absent
   tags: certbot

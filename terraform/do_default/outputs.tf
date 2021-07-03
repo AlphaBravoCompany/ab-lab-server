@@ -35,11 +35,11 @@ resource "local_file" "ansible_all" {
       addl_admin_user = var.ansible_addl_admin_user,
       ansible_user = var.ansible_user,
       environment_systemd_directory = var.environment_systemd_directory,
-      docker_compose_version = var.docker_docker_compose_version
-      git_url = var.git_url
-      code_server_version = var.code_server_version
-      code_server_password = var.code_server_password
-      cloudflare_email = var.cloudflare_email
+      docker_compose_version = var.docker_docker_compose_version,
+      git_url = var.git_url,
+      code_server_version = var.code_server_version,
+      code_server_password = var.code_server_password,
+      cloudflare_email = var.cloudflare_email,
       portainer_password = var.portainer_password
       }
     )
@@ -65,9 +65,10 @@ resource "local_file" "cloudflare_ini" {
 
 resource "local_file" "lab_server_info" {
   content  = templatefile("./templates/lab-server-info.tmpl", {
-      lab_servers = module.lab-server[*].droplet_name
-      environment_domain = var.environment_domain
-      deployment_name = var.deployment_name
+      lab_servers = module.lab-server[*].droplet_name,
+      environment_domain = var.environment_domain,
+      deployment_name = var.deployment_name,
+      addl_admin_user = var.ansible_addl_admin_user
       }
     )
   filename = "../../ansible/files/${var.deployment_name}/lab-server-info.txt"

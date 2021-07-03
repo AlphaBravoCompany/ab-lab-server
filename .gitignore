@@ -21,5 +21,8 @@ passphrase
 /ansible/ansible.cfg
 /ssh/*
 *provider.tf
+
+#Include these files
 !/terraform/do_default/provider.tf
+!ssl-dhparams.pem
 

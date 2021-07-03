@@ -7,8 +7,8 @@ services:
     volumes:
       - /ab/portainer/data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-      - /ab/certbot/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem:/certs/fullchain.pem
-      - /ab/certbot/live/{{ ansible_hostname }}.{{ environment_domain }}/privkey.pem:/certs/privkey.pem
+      - /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem:/certs/fullchain.pem
+      - /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/privkey.pem:/certs/privkey.pem
       - /ab/portainer/portainer-password.txt:/portainer-password.txt
     ports:
       - "9000:9000"

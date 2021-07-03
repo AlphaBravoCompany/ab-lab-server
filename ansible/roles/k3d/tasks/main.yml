@@ -34,10 +34,6 @@
     update-cache: yes
   tags: k3d
 
-- name: deploy k3d cluster
-  ansible.builtin.command: sudo apt-get update -y
-  tags: k3d
-
 - name: Installing kubectl
   become: yes
   ansible.builtin.apt:

@@ -1,7 +1,7 @@
 ---
 ansible:
     user: "root"
-    addl_admin_user: "alphabravo"
+    addl_admin_user: "abtraining"
 
 aws:
     bucket_name: "alphabravo-k8s-terraform-states"
@@ -27,7 +27,8 @@ terraform:
 digitalocean:
     region: "nyc3"
     droplet_image: "ubuntu-20-04-x64"
-    lab_droplet_size: "s-8vcpu-16gb-intel"
+    #lab_droplet_size: "s-8vcpu-16gb-intel" #production only
+    lab_droplet_size: "s-4vcpu-8gb"
     provider_version: "1.22.2"
     provider_source: "digitalocean/digitalocean"
     server_count: "1"

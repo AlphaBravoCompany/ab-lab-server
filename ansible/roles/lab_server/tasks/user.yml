@@ -14,9 +14,13 @@
     create_home: yes
 
 - name: Add addl_admin_user user to the sudoers
-  copy:
-      dest: "/etc/sudoers.d/{{ addl_admin_user }}"
-      content: "{{ addl_admin_user }}  ALL=(ALL)  NOPASSWD: ALL"
+  lineinfile:
+    path: /etc/sudoers.d/ansibleuser
+    line: '{{ addl_admin_user }} ALL=(ALL) NOPASSWD: ALL, !/bin/su'
+    state: present
+    mode: 0440
+    create: yes
+    validate: 'visudo -cf %s'
 
 - name: Create directory .ssh
   ansible.builtin.file:

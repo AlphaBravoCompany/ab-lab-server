@@ -6,7 +6,7 @@
     - role: lab_server
     - role: security
     - role: docker
-    - role: certbot
+    - role: containers/certbot
     - role: code-server
     - role: containers/rancher
     - role: containers/portainer

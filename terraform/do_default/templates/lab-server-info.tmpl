@@ -9,6 +9,6 @@ https://${server}.${environment_domain}:12443
 Portainer:
 https://${server}.${environment_domain}:9000
 SSH:
-ssh -i ${deployment_name}-private-key.pem root@${server}.${environment_domain}
+ssh -i ${deployment_name}-private-key.pem ${addl_admin_user}@${server}.${environment_domain}
 
 %{ endfor ~}

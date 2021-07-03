@@ -29,13 +29,20 @@
     remote_src: yes
   tags: code-server, code-server-download
 
+- name: Get stats of the FS object
+  ansible.builtin.stat:
+    path: /usr/lib/code-server/code-server-{{ code_server_version }}-linux-amd64/bin/code-server
+  register: code
+
 - name: Move code-server
   ansible.builtin.command: mv /tmp/code-server-{{ code_server_version }}-linux-amd64 /usr/lib/code-server
   tags: code-server, code-server-move
+  when: code.stat.exists == False
 
 - name: Link code-server
   ansible.builtin.command: ln -s /usr/lib/code-server/code-server-{{ code_server_version }}-linux-amd64/bin/code-server /usr/local/bin/code-server
   tags: code-server
+  when: code.stat.exists == False
 
 - name: modify code-server
   ansible.builtin.command: chmod a+x /usr/lib/code-server
