@@ -100,3 +100,12 @@
     path: /ab/certbot
     state: absent
   tags: certbot
+
+- name: Change ownership of cert files
+  ansible.builtin.file:
+    path: /ab/certs
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: '0755'
+    recurse: yes
+  tags: certbot

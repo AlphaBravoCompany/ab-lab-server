@@ -1,7 +1,7 @@
 This page lists all lab server links for this deployment.
 
 %{ for server in lab_servers ~}
-Hostname: ${server}
+Hostname: ${server}.${environment_domain}
 Code-Server:
 https://${server}.${environment_domain}:11443
 Rancher:

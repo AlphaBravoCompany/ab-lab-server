@@ -21,6 +21,10 @@ passphrase
 /ansible/ansible.cfg
 /ssh/*
 *provider.tf
+/terraform/r*
+/terraform/test*
+/ansible/inventory/r*
+/ansible/inventory/test*
 
 #Include these files
 !/terraform/do_default/provider.tf
