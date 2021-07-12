@@ -11,3 +11,4 @@
     - role: containers/rancher
     - role: containers/portainer
     - role: k3d
+    - role: post-deploy

@@ -1,0 +1,24 @@
+---
+- name: Change ownership of /ab directory
+  ansible.builtin.file:
+    path: /ab
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: '0755'
+    recurse: yes
+  tags: postdeploy
+
+- name: Check if reboot required
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_required_file
+  tags:
+    - never
+    - reboot
+
+- name: Reboot if required
+  reboot:
+  when: reboot_required_file.stat.exists == true
+  tags:
+    - never
+    - reboot
