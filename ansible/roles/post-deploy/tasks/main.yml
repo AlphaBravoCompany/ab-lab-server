@@ -5,7 +5,6 @@
     owner: "{{ addl_admin_user }}"
     group: "{{ addl_admin_user }}"
     mode: '0755'
-    recurse: yes
   tags: postdeploy
 
 - name: Check if reboot required

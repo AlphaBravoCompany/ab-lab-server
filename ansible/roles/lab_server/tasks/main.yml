@@ -94,6 +94,33 @@
     name: "{{ ansible_user }}"
     shell: /bin/zsh
 
+- name: change addl user shell to zsh
+  user:
+    name: "{{ addl_admin_user }}"
+    shell: /bin/zsh
+
+- name: Create ab/tmp/ab-dotfiles directory
+  ansible.builtin.file:
+    path: /ab/tmp/dotfiles
+    state: directory
+    mode: '0755'
+
+- name: Clone dotfiles repo
+  ansible.builtin.git:
+    repo: "{{ git_dotfile_url }}"
+    dest: /ab/tmp/ab-dotfiles
+
+- name: Run dotfiles install
+  become: true
+  become_user: {{ addl_admin_user }}
+  shell: cd /ab/tmp/ab-dotfiles && chmod +x install.sh && ./install.sh
+
+- name: Remove /ab/tmp/ab-dotfile directory
+  ansible.builtin.file:
+    path: /ab/tmp/ab-dotfiles
+    state: absent
+  tags: lab-server
+
 - name: Create ab/labs directory
   ansible.builtin.file:
     path: /ab/labs
@@ -102,5 +129,5 @@
 
 - name: Clone Lab Repo
   ansible.builtin.git:
-    repo: "{{ git_url }}"
+    repo: "{{ git_lab_url }}"
     dest: /ab/labs

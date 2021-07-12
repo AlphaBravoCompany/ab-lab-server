@@ -3,6 +3,7 @@ Description=code-server
 
 [Service]
 User={{ addl_admin_user }}
+Group={{ addl_admin_user }}
 Type=simple
 Environment=PASSWORD={{ code_server_password }}
 ExecStart=/usr/local/bin/code-server --bind-addr 0.0.0.0:11443 --user-data-dir /ab/code-server --auth password --cert /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem --cert-key /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/privkey.pem

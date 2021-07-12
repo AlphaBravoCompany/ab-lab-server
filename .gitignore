@@ -25,6 +25,7 @@ passphrase
 /terraform/test*
 /ansible/inventory/r*
 /ansible/inventory/test*
+*.wip
 
 #Include these files
 !/terraform/do_default/provider.tf

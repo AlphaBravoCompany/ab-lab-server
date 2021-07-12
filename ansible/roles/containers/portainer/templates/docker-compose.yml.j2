@@ -6,11 +6,11 @@ services:
     image: portainer/portainer-ce
     container_name: portainer
     volumes:
-      - /ab/portainer/data:/data
+      - /ab/misc/portainer/data:/data
       - /var/run/docker.sock:/var/run/docker.sock
       - /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem:/certs/fullchain.pem
       - /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/privkey.pem:/certs/privkey.pem
-      - /ab/portainer/portainer-password.txt:/portainer-password.txt
+      - /ab/misc/portainer/portainer-password.txt:/portainer-password.txt
     ports:
       - "9000:9000"
     command: '--admin-password-file=/portainer-password.txt --ssl --sslcert /certs/fullchain.pem --sslkey /certs/privkey.pem'
