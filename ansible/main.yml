@@ -3,9 +3,9 @@
   gather_facts: yes
   become: yes
   roles:
+    - role: security
     - role: docker
     - role: lab_server
-    - role: security
     - role: containers/certbot
     - role: code-server
     - role: containers/rancher
