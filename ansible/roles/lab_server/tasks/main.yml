@@ -99,35 +99,64 @@
     name: "{{ addl_admin_user }}"
     shell: /bin/zsh
 
-- name: Create ab/tmp/ab-dotfiles directory
+- name: Check if dotfiles have already been loaded
+  stat:
+    path: /home/{{ addl_admin_user }}/.zshrc
+  register: dotfiles
+  tags: dotfiles
+
+- name: Create ab/misc/ab-dotfiles directory
   ansible.builtin.file:
-    path: /ab/tmp/dotfiles
+    path: /ab/misc/ab-dotfiles
     state: directory
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
     mode: '0755'
+  when: dotfiles.stat.exists == false
 
 - name: Clone dotfiles repo
+  become: true
+  become_user: "{{ addl_admin_user }}"
   ansible.builtin.git:
-    repo: "{{ git_dotfile_url }}"
-    dest: /ab/tmp/ab-dotfiles
+    repo: "{{ git_dotfiles_url }}"
+    dest: /ab/misc/ab-dotfiles
+  when: dotfiles.stat.exists == false
 
 - name: Run dotfiles install
   become: true
-  become_user: {{ addl_admin_user }}
-  shell: cd /ab/tmp/ab-dotfiles && chmod +x install.sh && ./install.sh
-
-- name: Remove /ab/tmp/ab-dotfile directory
-  ansible.builtin.file:
-    path: /ab/tmp/ab-dotfiles
-    state: absent
-  tags: lab-server
+  become_user: "{{ addl_admin_user }}"
+  shell: cd /ab/misc/ab-dotfiles && sudo chmod +x install.sh && ./install.sh
+  when: dotfiles.stat.exists == false
 
 - name: Create ab/labs directory
   ansible.builtin.file:
     path: /ab/labs
     state: directory
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
     mode: '0755'
 
 - name: Clone Lab Repo
+  become: true
+  become_user: "{{ addl_admin_user }}"
   ansible.builtin.git:
     repo: "{{ git_lab_url }}"
     dest: /ab/labs
+    force: yes
+  tags: git-clone
+
+- name: Find all of the files inside this directory
+  find:
+    paths: "/ab/labs/"
+    patterns: "README.md"
+    recurse: yes
+  register: repos
+  tags: replace
+
+- name: Replace foo with bar in the files
+  replace:
+    path: "{{ item.path }}"
+    regexp: 'LABSERVERNAME'
+    replace: '{{ ansible_hostname }}.{{ environment_domain }}'
+  with_items: "{{ repos.files }}"
+  tags: replace

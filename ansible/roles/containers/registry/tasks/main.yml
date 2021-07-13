@@ -1,0 +1,9 @@
+- name: Create a docker registry container
+  community.docker.docker_container:
+    name: registry
+    image: registry:2
+    ports:
+      - "127.0.0.1:5000:5000"
+    restart_policy: unless-stopped
+    state: started
+  tags: registry

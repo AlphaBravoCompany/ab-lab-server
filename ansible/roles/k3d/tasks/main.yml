@@ -18,6 +18,12 @@
   shell: /ab/k3d/install.sh >> /ab/k3d/install-log.txt
   tags: k3d
 
+- name: Remove file /ab/k3d
+  ansible.builtin.file:
+    path: /ab/k3d
+    state: absent
+  tags: k3d
+
 - name: Adding kubernetes apt-key
   become: yes
   ansible.builtin.apt_key:

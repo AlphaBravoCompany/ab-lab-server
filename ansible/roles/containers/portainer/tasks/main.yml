@@ -10,10 +10,10 @@
 - name: Copy portainer-password file
   ansible.builtin.copy:
     src: files/{{ deployment_name }}/portainer-password.txt
-    dest: /ab/misc/portainer/portainer-password.txt
-    owner: root
-    group: root
-    mode: '0600'
+    dest: /ab/misc/portainer/
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: '0755'
   tags: portainer
 
 - name: Copy docker-compose config file
@@ -31,8 +31,8 @@
   register: output
   tags: portainer
 
-- name: Remove file portainer-password file
-  ansible.builtin.file:
-    path: /ab/misc/portainer/portainer-password.txt
-    state: absent
-  tags: portainer
+# - name: Remove file portainer-password file
+#   ansible.builtin.file:
+#     path: /ab/misc/portainer/portainer-password.txt
+#     state: absent
+#   tags: portainer

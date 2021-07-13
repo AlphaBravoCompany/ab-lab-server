@@ -1,8 +1,10 @@
 ---
-- name: Create ab/code-server directory
+- name: Create ab/misc/code-server directory
   ansible.builtin.file:
-    path: /ab/code-server
+    path: /ab/misc/code-server
     state: directory
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
     mode: '0755'
   tags: code-server
 
@@ -33,6 +35,7 @@
   ansible.builtin.stat:
     path: /usr/lib/code-server/code-server-{{ code_server_version }}-linux-amd64/bin/code-server
   register: code
+  tags: code-server
 
 - name: Move code-server
   ansible.builtin.command: mv /tmp/code-server-{{ code_server_version }}-linux-amd64 /usr/lib/code-server
@@ -61,13 +64,52 @@
   systemd:
     name: code-server
     daemon_reload: yes
-    state: restarted
+    state: started
     enabled: yes
     no_block: yes
   tags: code-server
 
-- name: Check to ensurecode-server service actually started
+- name: Check to ensure code-server service actually started
   ansible.builtin.service:
     name: code-server
     state: started
+  tags: code-server
+
+- name: Copy code-server workspace file
+  template:
+    src: "default.code-workspace.j2"
+    dest: "/ab/misc/code-server/User/"
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: 0755
+    force: no
+  tags: code-server
+
+- name: Copy code-server settings.json file
+  ansible.builtin.copy:
+    src: files/settings.json
+    dest: "/ab/misc/code-server/User/"
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: 0755
+    force: yes
+  tags: code-server
+
+- name: Copy restore-terminal extension file
+  ansible.builtin.copy:
+    src: files/restore-terminals.tar.gz
+    dest: "/ab/misc/code-server/User/extensions/"
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: 0755
+    force: yes
+  tags: code-server
+
+- name: Unarchive restore-terminals tar file
+  become: true
+  become_user: "{{ addl_admin_user }}"
+  ansible.builtin.unarchive:
+    src: /ab/misc/code-server/User/extensions/restore-terminals.tar.gz
+    dest: /ab/misc/code-server/User/extensions/
+    remote_src: yes
   tags: code-server

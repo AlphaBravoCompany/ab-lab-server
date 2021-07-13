@@ -13,4 +13,5 @@ services:
       - /ab/misc/portainer/portainer-password.txt:/portainer-password.txt
     ports:
       - "9000:9000"
+    restart: unless-stopped
     command: '--admin-password-file=/portainer-password.txt --ssl --sslcert /certs/fullchain.pem --sslkey /certs/privkey.pem'

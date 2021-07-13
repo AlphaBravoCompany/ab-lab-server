@@ -3,12 +3,13 @@
   gather_facts: yes
   become: yes
   roles:
+    - role: docker
     - role: lab_server
     - role: security
-    - role: docker
     - role: containers/certbot
     - role: code-server
     - role: containers/rancher
     - role: containers/portainer
+    - role: containers/registry
     - role: k3d
     - role: post-deploy

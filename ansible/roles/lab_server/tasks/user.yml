@@ -1,14 +1,13 @@
 ---
-- name: Ensure group "addl_admin_user" exists
-  ansible.builtin.group:
-    name: "{{ addl_admin_user }}"
-    state: present
+# - name: Ensure group {{ addl_admin_user }} exists
+#   ansible.builtin.group:
+#     name: "{{ addl_admin_user }}"
+#     state: present
 
 - name: Add an additional user with sudo capabilities
   user:
     name: "{{ addl_admin_user }}"
-    group: "{{ addl_admin_user }}"
-    groups: sudo
+    groups: sudo,docker
     append: yes
     shell: /bin/bash
     create_home: yes
