@@ -54,9 +54,21 @@
     validate: 'visudo -cf %s'
   when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
 
+- name: Set a hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: add name to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.0\.1[ \t]+localhost'
+    line: '127.0.0.1 localhost {{ ansible_hostname }} {{ ansible_hostname }}.{{ environment_domain }}'
+    state: present
+
 - name: Install apt packages
   apt:
     name:
+    - acl
     - zip
     - build-essential
     - ca-certificates
@@ -115,12 +127,14 @@
   when: dotfiles.stat.exists == false
 
 - name: Clone dotfiles repo
-  become: true
-  become_user: "{{ addl_admin_user }}"
   ansible.builtin.git:
     repo: "{{ git_dotfiles_url }}"
     dest: /ab/misc/ab-dotfiles
   when: dotfiles.stat.exists == false
+
+- name: Change owner of /ab/misc/ab-dotfiles folder
+  shell: chown -R abtraining:abtraining /ab/misc/ab-dotfiles
+  tags: lab-repo
 
 - name: Run dotfiles install
   become: true
@@ -137,12 +151,14 @@
     mode: '0755'
 
 - name: Clone Lab Repo
-  become: true
-  become_user: "{{ addl_admin_user }}"
   ansible.builtin.git:
     repo: "{{ git_lab_url }}"
     dest: /ab/labs
     force: yes
+  tags: lab-repo
+
+- name: Change owner of /ab/labs folder
+  shell: chown -R abtraining:abtraining /ab/labs
   tags: lab-repo
 
 - name: Find all of the README files inside this directory

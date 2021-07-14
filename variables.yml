@@ -1,11 +1,17 @@
 ---
 ansible:
-    user: "root"
+    do_user: "root"
+    aws_user: "ubuntu"
     addl_admin_user: "abtraining"
 
 aws:
     bucket_name: "alphabravo-k8s-terraform-states"
-    region: "us-east-1"
+    bucket_region: "us-east-1"
+    region: "us-east-2"
+    # instance_image: ami-0dd76f917833aac4b #ubuntu 20.04 us-east-1
+    instance_image: ami-0b29b6e62f2343b46 #ubuntu 20.04 us-east-2
+    lab_instance_size: m5.4xlarge
+    server_count: "4"
 
 cloudflare:
     provider_source: "cloudflare/cloudflare"
@@ -31,5 +37,5 @@ digitalocean:
     lab_droplet_size: "s-4vcpu-8gb"
     provider_version: "1.22.2"
     provider_source: "digitalocean/digitalocean"
-    server_count: "4"
+    server_count: "5"
 

@@ -3,7 +3,9 @@
   ansible.builtin.file:
     path: /ab/k3d
     state: directory
-    mode: '0755'
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0777'
   tags: k3d
 
 - name: Download k3d
