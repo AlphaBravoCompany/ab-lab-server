@@ -43,6 +43,7 @@ resource "local_file" "ansible_all" {
       code_server_password = var.code_server_password,
       cloudflare_email = var.cloudflare_email,
       portainer_password = var.portainer_password
+      rancher_password = var.rancher_password
       }
     )
   filename = "../../ansible/inventory/${var.deployment_name}/group_vars/all.yml"
