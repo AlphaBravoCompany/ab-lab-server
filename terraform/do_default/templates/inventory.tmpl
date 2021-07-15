@@ -1,8 +1,0 @@
-[lab_servers]
-%{ for ip in lab_server_ips ~}
-${ip}
-%{ endfor ~}
-
-[lab_servers:vars]
-ansible_ssh_user=root
-ansible_ssh_private_key_file=${private_key}
