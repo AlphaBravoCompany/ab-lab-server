@@ -1,4 +1,12 @@
-.terraform/
+#Include these files
+!/terraform/do_default/provider.tf
+!ssl-dhparams.pem
+!/terraform/do_default
+!/terraform/aws_spot_default
+!/terraform/aws_default
+!/terraform/templates
+
+# Exclude these files
 *.tfstate*
 *.tfvars
 *.pem
@@ -20,14 +28,9 @@ passphrase
 *.key
 /ansible/ansible.cfg
 /ssh/*
-*provider.tf
-/terraform/r*
-/terraform/test*
-/ansible/inventory/r*
-/ansible/inventory/test*
+/terraform/*
+/ansible/inventory/
 *.wip
 
-#Include these files
-!/terraform/do_default/provider.tf
-!ssl-dhparams.pem
+
 

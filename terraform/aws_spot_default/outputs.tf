@@ -1,31 +1,31 @@
-output "lab_server_name" {
-    value = module.lab-server[*].droplet_name
-}
+# output "lab_server_name" {
+#    value = module.lab-server[*].droplet_name
+#}
 
-output "lab_server_public_ips" {
-    value = module.lab-server[*].droplet_ipv4_address
-}
-
-output "lab_server_private_ips" {
-    value = module.lab-server[*].droplet_ipv4_address_private
-}
-
-output "vpc_uuid" {
-    value = digitalocean_vpc.vpc.id
-}
+#output "lab_server_public_ips" {
+#    value = module.lab-server[*].droplet_ipv4_address
+#}
+#
+#output "lab_server_private_ips" {
+#    value = module.lab-server[*].droplet_ipv4_address_private
+#}
+#
+#output "vpc_uuid" {
+#    value = digitalocean_vpc.vpc.id
+#}
 
 resource "local_file" "k3s_inventory" {
   content  = templatefile("../templates/inventory.tmpl", {
-      server_name = module.lab-server[*].droplet_name,
-      lab_server_ips = module.lab-server[*].droplet_ipv4_address,
-      private_key = var.digitalocean_ssh_path,
-      ansible_user = var.ansible_do_user,
-      deployment_name = var.deployment_name,
-      private_key = var.digitalocean_ssh_path
+      server_name = aws_spot_instance_request.lab-server[*].tags.Name,
+      lab_server_ips = aws_spot_instance_request.lab-server[*].public_ip,
+      private_key = "./files/${var.deployment_name}/${var.deployment_name}-private-key.pem",
+      ansible_user = var.ansible_aws_user,
+      deployment_name = var.deployment_name
       environment_domain = var.environment_domain
       }
     )
   filename = "../../ansible/inventory/${var.deployment_name}/${var.deployment_name}-inventory"
+  depends_on = [aws_spot_instance_request.lab-server]
 }
 
 resource "local_file" "ansible_all" {
@@ -35,7 +35,7 @@ resource "local_file" "ansible_all" {
       letsencrypt_environment = var.letsencrypt_environment,
       environment_domain = var.environment_domain,
       addl_admin_user = var.ansible_addl_admin_user,
-      ansible_user = var.ansible_do_user,
+      ansible_user = var.ansible_aws_user,
       environment_systemd_directory = var.environment_systemd_directory,
       docker_compose_version = var.docker_docker_compose_version,
       git_lab_url = var.git_lab_url,
@@ -43,7 +43,7 @@ resource "local_file" "ansible_all" {
       code_server_version = var.code_server_version,
       code_server_password = var.code_server_password,
       cloudflare_email = var.cloudflare_email,
-      portainer_password = var.portainer_password
+      portainer_password = var.portainer_password,
       rancher_password = var.rancher_password
       }
     )
@@ -69,7 +69,7 @@ resource "local_file" "cloudflare_ini" {
 
 resource "local_file" "lab_server_info" {
   content  = templatefile("../templates/lab-server-info.tmpl", {
-      lab_servers = module.lab-server[*].droplet_name,
+      lab_servers = aws_spot_instance_request.lab-server.*.tags.Name,
       environment_domain = var.environment_domain,
       deployment_name = var.deployment_name,
       addl_admin_user = var.ansible_addl_admin_user

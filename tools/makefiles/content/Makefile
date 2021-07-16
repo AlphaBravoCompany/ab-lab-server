@@ -17,10 +17,6 @@ cleanup-kubeconfig: ## Removes all dynamically generated kubeconfig files from t
 ## CONTENT GENERATION
 ## ----
 
-generate-folder: ## Generates the development folder.
-	@echo "$(COLOR_GREEN)\n--- Dynamically generating Terraform folders based on $(BRANCH) name.$(COLOR_END)"
-	@test -d terraform/$(BRANCH) || cp -Rf terraform/do_default terraform/$(BRANCH)
-
 generate-secrets-yaml: ## Generate the variables.yml file if it doesn't exist.
 	@echo "$(COLOR_GREEN)\n--- Generating secrets.yml file if it does not already exist.$(COLOR_END)"
 	@test -s secrets.yml || cp secrets.yml.dist secrets.yml
