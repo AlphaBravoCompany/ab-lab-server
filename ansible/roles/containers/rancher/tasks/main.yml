@@ -1,18 +1,22 @@
 ---
 # Rancher Docker Container
+- name: set sysctl -w net/netfilter/nf_conntrack_max=524288
+  shell: sudo sysctl -w net/netfilter/nf_conntrack_max=524288
+  tags: rancher
+
 - name: Create ab/rancher directory
   ansible.builtin.file:
     path: /ab/misc/rancher
     state: directory
-    mode: '0755'
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: '0777'
   tags: rancher
 
 - name: Copy docker-compose config file
   template:
     src: "docker-compose.yml.j2"
     dest: "/ab/misc/rancher/docker-compose.yml"
-    owner: root
-    group: root
     mode: 0755
   tags: rancher
 
@@ -21,3 +25,15 @@
     project_src: /ab/misc/rancher/
   register: output
   tags: rancher
+
+- name: Copy rancher set password file
+  template:
+    src: "set-rancher-pw.sh.j2"
+    dest: "/ab/misc/rancher/set-rancher-pw.sh"
+    mode: 0755
+  tags: rancher, rancher-pw
+
+- name: Run set-rancher-pw.sh script
+  shell: cd /ab/misc/rancher && chmod +x set-rancher-pw.sh && ./set-rancher-pw.sh
+  ignore_errors: yes
+  tags: rancher, rancher-pw

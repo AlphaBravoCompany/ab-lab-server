@@ -14,8 +14,8 @@ services:
       --email {{ cloudflare_email }}
       --agree-tos --no-eff-email
       --force-renewal
-      -d {{ ansible_hostname }}.{{ environment_domain }}
-      -d *.{{ ansible_hostname }}.{{ environment_domain }}
+      -d {{ inventory_hostname }}
+      -d *.{{ inventory_hostname }}
   nginx:
     image: nginx:alpine
     ports:

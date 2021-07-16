@@ -19,6 +19,10 @@
   retries: 100
   until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
 
+- name: Set higher inotify.max_user_instances so we can run more containers
+  shell: sysctl -w fs.inotify.max_user_instances=8192
+  tags: docker
+
 - name: Add an apt signing key for Docker
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
@@ -41,7 +45,7 @@
   retries: 100
   until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
 
-- name: Install python Docker / Docker-compse module
+- name: Install python Docker / Docker-compose module
   pip:
     name:
         - docker

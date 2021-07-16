@@ -1,9 +1,11 @@
 ---
-- name: Create ab/labs directory
+- name: Create ab/k3d directory
   ansible.builtin.file:
     path: /ab/k3d
     state: directory
-    mode: '0755'
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0777'
   tags: k3d
 
 - name: Download k3d
@@ -47,4 +49,13 @@
     state: present
     update_cache: yes
     force_apt_get: yes
+  tags: k3d
+
+- name: Create ab/misc/k3dvol directory
+  ansible.builtin.file:
+    path: /ab/misc/k3dvol
+    state: directory
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: '0777'
   tags: k3d

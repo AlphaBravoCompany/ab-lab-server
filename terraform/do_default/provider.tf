@@ -12,7 +12,7 @@ terraform {
     bucket = "replace-me-aws-bucket-name"
     access_key = "replace-me-aws-access-key"
     secret_key = "replace-me-aws-secret-key"
-    region = "replace-me-aws-region"
+    region = "replace-me-aws-bucket-region"
     key = "replace-me-terraform-backend-key"
   }
   required_version = ">= replace-me-terraform-required-version"
