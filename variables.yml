@@ -12,6 +12,7 @@ aws:
     instance_image: ami-0b29b6e62f2343b46 #ubuntu 20.04 us-east-2
     lab_instance_size: m5.4xlarge
     server_count: "4"
+    spot_price: ".768"
 
 cloudflare:
     provider_source: "cloudflare/cloudflare"

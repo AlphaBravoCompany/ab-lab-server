@@ -18,7 +18,7 @@ resource "local_file" "k3s_inventory" {
   content  = templatefile("../templates/inventory.tmpl", {
       server_name = aws_spot_instance_request.lab-server[*].tags.Name,
       lab_server_ips = aws_spot_instance_request.lab-server[*].public_ip,
-      private_key = "./ansible/files/${var.deployment_name}/${var.deployment_name}-private-key.pem",
+      private_key = "./files/${var.deployment_name}/${var.deployment_name}-private-key.pem",
       ansible_user = var.ansible_aws_user,
       deployment_name = var.deployment_name
       environment_domain = var.environment_domain

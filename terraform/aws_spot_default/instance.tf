@@ -19,7 +19,7 @@ resource "aws_spot_instance_request" "lab-server" {
   wait_for_fulfillment = true
   count         = var.aws_server_count
   ami           = var.aws_instance_image
-  spot_price    = "0.30"
+  spot_price    = var.aws_spot_price
   instance_type = var.aws_lab_instance_size
   key_name = aws_key_pair.lab_server_key.key_name
   subnet_id = "${aws_subnet.public.id}"
@@ -33,7 +33,7 @@ resource "aws_spot_instance_request" "lab-server" {
   provisioner "local-exec" {
     command = "aws ec2 create-tags --resources ${self.spot_instance_id} --tags Key=Name,Value=${var.deployment_name}-lab${count.index + 1} --region ${var.aws_region}"
   }
-  
+
   tags = {
     Name = "${var.deployment_name}-lab${count.index + 1}"
   }

@@ -7,7 +7,7 @@ ansible-deploy: ## Run the Ansible playbook against the K8s infrastructure.
 #	@chmod +x tools/populateKnownHosts.py
 #	@python3 tools/populateKnownHosts.py
 #	@touch ansible/vault-password.txt
-	@ansible-playbook -i ansible/inventory/$(BRANCH)/$(BRANCH)-inventory ansible/main.yml
+	@cd ansible && ansible-playbook -i inventory/$(BRANCH)/$(BRANCH)-inventory main.yml
 
 ansible-bastion-deploy: ## Run the Ansible playbook against the K8s infrastructure.
 	@echo "$(COLOR_GREEN)\n--- Running Ansible Playbook.$(COLOR_END)"

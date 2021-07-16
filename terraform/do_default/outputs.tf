@@ -16,9 +16,10 @@ output "vpc_uuid" {
 
 resource "local_file" "k3s_inventory" {
   content  = templatefile("../templates/inventory.tmpl", {
+      server_name = module.lab-server[*].droplet_name,
       lab_server_ips = module.lab-server[*].droplet_ipv4_address,
       private_key = var.digitalocean_ssh_path,
-      ansible_user = var.ansible_user,
+      ansible_user = var.ansible_do_user,
       deployment_name = var.deployment_name,
       private_key = var.digitalocean_ssh_path
       environment_domain = var.environment_domain
@@ -34,7 +35,7 @@ resource "local_file" "ansible_all" {
       letsencrypt_environment = var.letsencrypt_environment,
       environment_domain = var.environment_domain,
       addl_admin_user = var.ansible_addl_admin_user,
-      ansible_user = var.ansible_user,
+      ansible_user = var.ansible_do_user,
       environment_systemd_directory = var.environment_systemd_directory,
       docker_compose_version = var.docker_docker_compose_version,
       git_lab_url = var.git_lab_url,
