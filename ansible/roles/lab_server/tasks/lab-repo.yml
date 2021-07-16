@@ -1,4 +1,10 @@
 ---
+- name: Remove all files in /ab/labs
+  ansible.builtin.file:
+    path: /ab/labs/
+    state: absent
+  tags: lab-server, lab-repo
+
 - name: Clone Lab Repo
   ansible.builtin.git:
     repo: "{{ git_lab_url }}"
