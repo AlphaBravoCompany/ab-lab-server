@@ -1,5 +1,6 @@
 ---
 - include: user.yml
+- include: lab-repo.yml
 
 - name: Set SELinux to disabled state
   ansible.posix.selinux:

@@ -4,15 +4,17 @@
     repo: "{{ git_lab_url }}"
     dest: /ab/labs
     force: yes
-  tags: lab-repo
+  tags: lab-server, lab-repo
 
 - name: Change owner of /ab/labs folder
   shell: chown -R abtraining:abtraining /ab/labs
-  tags: lab-repo
+  tags: lab-server, lab-repo
 
-- name: Change owner of /ab/labs folder
-  shell: rm -rf /ab/labs/.git
-  tags: lab-repo
+- name: Remove .git folder from lab repo
+  ansible.builtin.file:
+    path: /ab/labs/.git
+    state: absent
+  tags: lab-server, lab-repo
 
 - name: Find all of the README files inside this directory
   find:
@@ -20,7 +22,7 @@
     patterns: "README.md"
     recurse: yes
   register: repos
-  tags: replace, lab-repo
+  tags: lab-server, lab-repo
 
 - name: Replace LABSERVERNAME with the local DNS hostname in the files
   replace:
@@ -28,4 +30,4 @@
     regexp: 'LABSERVERNAME'
     replace: '{{ ansible_hostname }}.{{ environment_domain }}'
   with_items: "{{ repos.files }}"
-  tags: replace, lab-repo
+  tags: lab-server, lab-repo
