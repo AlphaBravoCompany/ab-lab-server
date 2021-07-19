@@ -14,8 +14,8 @@
 
 - name: Add addl_admin_user user to the sudoers
   lineinfile:
-    path: /etc/sudoers.d/{{ addl_admin_user }} 
-    line: '{{ addl_admin_user }} ALL=(ALL) NOPASSWD: ALL, !/bin/su'
+    path: /etc/sudoers.d/{{ addl_admin_user }}
+    line: '{{ addl_admin_user }} ALL=(ALL) NOPASSWD: ALL, !/bin/su, !/usr/sbin/shutdown, !/usr/sbin/halt, !/usr/sbin/reboot, !/usr/sbin/poweroff, !kill, '
     state: present
     mode: 0440
     create: yes
