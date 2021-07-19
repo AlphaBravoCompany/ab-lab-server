@@ -7,14 +7,5 @@
     "terminal.integrated.fontSize": 14,
     "files.exclude": {
         "**/.*": true
-    },
-    "restoreTerminals.terminals": [
-      {
-        "splitTerminals": [
-          {
-            "name": "zsh",
-          }
-        ]
-      }
-    ]
+    }
 }

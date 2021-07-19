@@ -1,4 +1,6 @@
 ---
+deployment_name: "test123" #optional. If not set, will use branch name.
+
 ansible:
     do_user: "root"
     aws_user: "ubuntu"

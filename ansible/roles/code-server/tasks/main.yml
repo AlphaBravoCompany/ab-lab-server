@@ -94,22 +94,3 @@
     mode: 0755
     force: yes
   tags: code-server
-
-- name: Copy restore-terminal extension file
-  ansible.builtin.copy:
-    src: files/restore-terminals.tar.gz
-    dest: "/ab/misc/code-server/extensions/"
-    owner: "{{ addl_admin_user }}"
-    group: "{{ addl_admin_user }}"
-    mode: 0755
-    force: yes
-  tags: code-server
-
-- name: Unarchive restore-terminals tar file
-  become: true
-  become_user: "{{ addl_admin_user }}"
-  ansible.builtin.unarchive:
-    src: /ab/misc/code-server/extensions/restore-terminals.tar.gz
-    dest: /ab/misc/code-server/extensions/
-    remote_src: yes
-  tags: code-server
