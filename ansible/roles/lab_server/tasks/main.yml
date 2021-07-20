@@ -85,6 +85,7 @@
     - curl
     - fonts-firacode
     - gnupg
+    - hibagent
     - htop
     - haveged
     - jq
@@ -110,6 +111,11 @@
   register: apt_action
   retries: 100
   until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
+
+- name: Enable EC2 spot hibernation agent
+  shell: /usr/bin/enable-ec2-spot-hibernation
+  when: "'aws' in ansible_kernel"
+  tags: lab-server
 
 - name: change user shell to zsh
   user:
