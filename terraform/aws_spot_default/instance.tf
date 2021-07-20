@@ -21,6 +21,7 @@ resource "aws_spot_instance_request" "lab-server" {
   ami           = var.aws_instance_image
   spot_price    = var.aws_spot_price
   instance_type = var.aws_lab_instance_size
+  instance_interruption_behavior = hibernate
   key_name = aws_key_pair.lab_server_key.key_name
   subnet_id = "${aws_subnet.public.id}"
   associate_public_ip_address = true
