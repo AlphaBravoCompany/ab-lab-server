@@ -1,0 +1,5 @@
+- name: shut down lab instances
+  community.general.shutdown:
+  tags:
+    - never
+    - shutdown

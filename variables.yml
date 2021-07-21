@@ -12,7 +12,7 @@ aws:
     region: "us-east-2"
     # instance_image: ami-0dd76f917833aac4b #ubuntu 20.04 us-east-1
     instance_image: ami-0b29b6e62f2343b46 #ubuntu 20.04 us-east-2
-    lab_instance_size: m5.4xlarge
+    lab_instance_size: m5.2xlarge
     server_count: "4"
     spot_price: ".768"
 
@@ -20,7 +20,7 @@ cloudflare:
     provider_source: "cloudflare/cloudflare"
 
 code_server:
-    version: "3.10.2"
+    version: "3.11.0"
 
 environment:
     systemd_directory: "/etc/systemd/system"

@@ -1,7 +1,7 @@
 ---
 # Rancher Docker Container
-- name: set sysctl -w net/netfilter/nf_conntrack_max=524288
-  shell: sudo sysctl -w net/netfilter/nf_conntrack_max=524288
+- name: set sysctl -w net/netfilter/nf_conntrack_max=262144
+  shell: sudo sysctl -w net/netfilter/nf_conntrack_max=262144
   tags: rancher
 
 - name: Create ab/rancher directory

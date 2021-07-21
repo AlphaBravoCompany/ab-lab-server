@@ -2,6 +2,7 @@
 include tools/makefiles/content/Makefile
 include tools/makefiles/content/do/Makefile
 include tools/makefiles/content/aws-spot/Makefile
+include tools/makefiles/content/aws/Makefile
 include tools/makefiles/deployment/Makefile
 include tools/makefiles/docker/Makefile
 include tools/makefiles/misc/Makefile
@@ -64,10 +65,16 @@ stage-2: terraform-deploy pause-buffer stage-3
 stage-3: ansible-deploy
 
 ## ---
-## A LIST OF STAGES TO OPERATE IN ORDER FOR AWS. NOT SHOWN IN MAKE LIST.
+## A LIST OF STAGES TO OPERATE IN ORDER FOR AWS SPOT. NOT SHOWN IN MAKE LIST.
 ## ---
 
 stage-1-aws-spot: generate-folder-aws-spot populate-vars stage-2
+
+## ---
+## A LIST OF STAGES TO OPERATE IN ORDER FOR AWS SPOT. NOT SHOWN IN MAKE LIST.
+## ---
+
+stage-1-aws: generate-folder-aws populate-vars stage-2
 
 
 ## --
@@ -78,6 +85,9 @@ setup-do: stage-1-do ## Runs a full, end-to-end deployment with infrastructure, 
 	@echo "$(COLOR_GREEN)\n--- Setup completed.$(COLOR_END)"
 
 setup-aws-spot: stage-1-aws-spot ## Runs a full, end-to-end deployment with infrastructure, K8s, and umbrella.
+	@echo "$(COLOR_GREEN)\n--- Setup completed.$(COLOR_END)"
+
+setup-aws: stage-1-aws ## Runs a full, end-to-end deployment with infrastructure, K8s, and umbrella.
 	@echo "$(COLOR_GREEN)\n--- Setup completed.$(COLOR_END)"
 
 teardown: terraform-kaboom cleanup-folders ## Runs all cleanup and teardown commands. WARNING: Permanent deletion!

@@ -14,14 +14,18 @@ resource "local_file" "ssh_key" {
   file_permission = "0600"
 }
 
+resource "aws_eip" "eip" {
+  instance = "${element(aws_instance.lab-server.*.id, count.index)}"
+  count    = var.aws_server_count
+  vpc      = true
+}
+
+
 # Lab Environment Deployment.
-resource "aws_spot_instance_request" "lab-server" {
-  wait_for_fulfillment = true
+resource "aws_instance" "lab-server" {
   count         = var.aws_server_count
   ami           = var.aws_instance_image
-  spot_price    = var.aws_spot_price
   instance_type = var.aws_lab_instance_size
-  instance_interruption_behavior = "hibernate"
   key_name = aws_key_pair.lab_server_key.key_name
   subnet_id = "${aws_subnet.public.id}"
   associate_public_ip_address = true
@@ -30,10 +34,6 @@ resource "aws_spot_instance_request" "lab-server" {
   }
 
   vpc_security_group_ids = ["${aws_security_group.allow_all.id}"]
-
-  provisioner "local-exec" {
-    command = "aws ec2 create-tags --resources ${self.spot_instance_id} --tags Key=Name,Value=${var.deployment_name}-lab${count.index + 1} --region ${var.aws_region}"
-  }
 
   tags = {
     Name = "${var.deployment_name}-lab${count.index + 1}"

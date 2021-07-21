@@ -3,6 +3,7 @@
   ansible.builtin.file:
     path: /ab/labs/
     state: absent
+    force: yes
   tags: lab-server, lab-repo
 
 - name: Clone Lab Repo
