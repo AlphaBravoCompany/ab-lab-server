@@ -28,7 +28,7 @@ passphrase
 *.key
 /ansible/ansible.cfg
 /ssh/*
-/terraform/*
+/terraform
 /ansible/inventory/
 *.wip
 
