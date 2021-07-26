@@ -6,7 +6,7 @@ services:
     container_name: rancher
     privileged: true
     volumes:
-      - /ab/misc/rancher:/var/lib/rancher
+      - rancher:/var/lib/rancher
       - /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem:/etc/rancher/ssl/cert.pem
       - /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/privkey.pem:/etc/rancher/ssl/key.pem
     ports:
@@ -14,3 +14,5 @@ services:
       - 12443:443
     restart: unless-stopped
     command: '--no-cacerts'
+volumes:
+  rancher: 

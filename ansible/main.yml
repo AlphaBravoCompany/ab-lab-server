@@ -11,6 +11,9 @@
     - role: containers/rancher
     - role: containers/portainer
     - role: containers/registry
+    - role: containers/haproxy
     - role: k3d
+    - role: k3s
+    - role: rke
     - role: post-deploy
     - role: shutdown

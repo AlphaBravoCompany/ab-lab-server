@@ -1,0 +1,7 @@
+#!/bin/bash
+name="{{ ansible_hostname }}$date +"%y-%m-%d""
+tar -zcvf /backups/"$name.tar.gz" /ab
+
+#!/bin/bash
+name="aws-r121-lab1-$(date +'%y-%m-%d')"
+sudo tar -zcvf /home/ubuntu/backups/"$name.tar.gz" /ab/misc/rancher/backups /ab/certs /

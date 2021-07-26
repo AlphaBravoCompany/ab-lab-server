@@ -1,0 +1,10 @@
+---
+- name: Download RKE binary x64
+  get_url:
+    url: https://github.com/rancher/rke/releases/download/v1.2.9/rke_linux-amd64
+    dest: /usr/local/bin/rke
+    owner: root
+    group: root
+    mode: 0755
+  when: ansible_facts.architecture == "x86_64"
+  tags: rke

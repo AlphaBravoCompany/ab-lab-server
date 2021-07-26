@@ -1,0 +1,25 @@
+---
+# HAProxy Docker Container
+- name: Create ab/misc/haproxy directory
+  ansible.builtin.file:
+    path: /ab/misc/haproxy
+    state: directory
+    mode: '0755'
+  tags: haproxy
+
+- name: Copy haproxy config file
+  template:
+    src: "haproxy.cfg.j2"
+    dest: "/ab/misc/haproxy/haproxy.cfg"
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: 0755
+  tags: haproxy
+
+- name: copy certificate file
+  shell: cp /ab/certs/archive/{{ ansible_hostname }}.{{ environment_domain }}/fullchain1.pem /ab/misc/haproxy/fullchain1.pem
+  tags: haproxy
+
+- name: copy certificate private key file
+  shell: cp /ab/certs/archive/{{ ansible_hostname }}.{{ environment_domain }}/privkey1.pem /ab/misc/haproxy/fullchain1.pem.key
+  tags: haproxy

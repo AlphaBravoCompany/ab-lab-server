@@ -8,6 +8,15 @@
     mode: '0755'
   tags: code-server
 
+- name: Create ab/misc/code-server/extensions directory
+  ansible.builtin.file:
+    path: /ab/misc/code-server/extensions
+    state: directory
+    owner: "{{ addl_admin_user }}"
+    group: "{{ addl_admin_user }}"
+    mode: '0755'
+  tags: code-server
+
 - name: Create /usr/lib/code-server directory
   ansible.builtin.file:
     path: /usr/lib/code-server
@@ -94,3 +103,16 @@
     mode: 0755
     force: yes
   tags: code-server
+
+- name: Extract codelab.zip to /ab/misc/code-server/extensions
+  ansible.builtin.unarchive:
+    src: files/codelab.zip
+    dest: /ab/misc/code-server/extensions
+    creates:
+  tags: code-server, codelab-ext
+
+- name: Restart Code-server
+  ansible.builtin.service:
+    name: code-server
+    state: restarted
+  tags: code-server, codelab-ext
