@@ -31,6 +31,10 @@
   register: repos
   tags: lab-server, lab-repo
 
+- name: Run facts module to get latest information
+  setup:
+  tags: lab-server, lab-repo
+
 - name: Replace LABSERVERNAME with the local DNS hostname in the files
   replace:
     path: "{{ item.path }}"

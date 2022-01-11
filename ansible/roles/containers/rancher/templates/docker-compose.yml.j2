@@ -14,5 +14,7 @@ services:
       - 12443:443
     restart: unless-stopped
     command: '--no-cacerts'
+    environment: 
+      - CATTLE_BOOTSTRAP_PASSWORD={{ rancher_password }}
 volumes:
   rancher: 
