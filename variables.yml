@@ -7,10 +7,10 @@ ansible:
     addl_admin_user: "abtraining"
 
 aws:
-    bucket_name: "alphabravo-k8s-terraform-states"
+    bucket_name: "alphabravo-k8s-terraform-states-alphabravogovt"
     bucket_region: "us-east-1"
     region: "us-east-2"
-    # instance_image: ami-0dd76f917833aac4b #ubuntu 20.04 us-east-1
+    #instance_image: ami-0dd76f917833aac4b #ubuntu 20.04 us-east-1
     instance_image: ami-0b29b6e62f2343b46 #ubuntu 20.04 us-east-2
     lab_instance_size: m5a.2xlarge
     server_count: "1"
