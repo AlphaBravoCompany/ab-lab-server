@@ -74,112 +74,29 @@
 - name: Install apt packages
   apt:
     name:
-    - acl
-    - apache2-utils
-    - zip
-    - build-essential
-    - ca-certificates
-    - curl
-    - fonts-firacode
-    - gnupg
-    - hibagent
-    - htop
+    - haproxy
     - haveged
-    - jq
-    - locales
-    - lsb-release
-    - python3-pip
-    - man
-    - net-tools
-    - openssl
-    - software-properties-common
-    - ssh
-    - sudo
-    - telnet
-    - unzip
-    - vim
-    - zsh
-    - libfontconfig1
-    - libgtk-3-0
-    - libxi6
-    - libxrender1
-    - libxtst6
     state: present
     update_cache: true
   register: apt_action
   retries: 100
   until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
 
-- name: Retrieve helm binary archive.
-  unarchive:
-    src: https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
-    dest: /tmp
-    creates: /usr/local/bin/helm
-    remote_src: yes
-  tags: lab-server, helm
+- name: Backup existing haproxy.cfg
+  ansible.builtin.command: mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig
+  tags: haproxy
 
-- name: Move helm binary into place.
-  command: cp /tmp/linux-amd64/helm /usr/local/bin/helm
-  args:
-    creates: /usr/local/bin/helm
-  tags: lab-server, helm
+- name: Copy haproxy.cfg file
+  ansible.builtin.copy:
+    src: files/{{ deployment_name }}/haproxy.cfg
+    dest: /etc/haproxy/
+    owner: ubuntu
+    group: ubuntu
+    mode: '0777'
+  tags: haproxy
 
-- name: Enable EC2 spot hibernation agent
-  shell: /usr/bin/enable-ec2-spot-hibernation
-  when: "'aws' in ansible_kernel"
-  tags: lab-server
-
-- name: change user shell to zsh
-  user:
-    name: "{{ ansible_user }}"
-    shell: /bin/zsh
-  tags: lab-server
-
-- name: change addl user shell to zsh
-  user:
-    name: "{{ addl_admin_user }}"
-    shell: /bin/zsh
-  tags: lab-server
-
-- name: Check if dotfiles have already been loaded
-  stat:
-    path: /home/{{ addl_admin_user }}/.zshrc
-  register: dotfiles
-  tags: lab-server, dotfiles
-
-- name: Create ab/misc/ab-dotfiles directory
-  ansible.builtin.file:
-    path: /ab/misc/ab-dotfiles
-    state: directory
-    owner: "{{ addl_admin_user }}"
-    group: "{{ addl_admin_user }}"
-    mode: '0755'
-  when: dotfiles.stat.exists == false
-  tags: lab-server
-
-- name: Clone dotfiles repo
-  ansible.builtin.git:
-    repo: "{{ git_dotfiles_url }}"
-    dest: /ab/misc/ab-dotfiles
-  when: dotfiles.stat.exists == false
-  tags: lab-server
-
-- name: Change owner of /ab/misc/ab-dotfiles folder
-  shell: chown -R abtraining:abtraining /ab/misc/ab-dotfiles
-  tags: lab-server
-
-- name: Run dotfiles install
-  become: true
-  become_user: "{{ addl_admin_user }}"
-  shell: cd /ab/misc/ab-dotfiles && sudo chmod +x install.sh && ./install.sh
-  when: dotfiles.stat.exists == false
-  tags: lab-server
-
-- name: Create ab/labs directory
-  ansible.builtin.file:
-    path: /ab/labs
-    state: directory
-    owner: "{{ addl_admin_user }}"
-    group: "{{ addl_admin_user }}"
-    mode: '0755'
-  tags: lab-server
+- name: Restart haproxy
+  ansible.builtin.service:
+    name: haproxy
+    state: restarted
+  tags: haproxy

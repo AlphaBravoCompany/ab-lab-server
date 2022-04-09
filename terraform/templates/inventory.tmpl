@@ -3,6 +3,9 @@
 ${name}.${environment_domain} ansible_host=${lab_server_ips[index]}
 %{ endfor ~}
 
-[lab_servers:vars]
+[haproxy_server]
+${haproxy_name}.${environment_domain} ansible_host=${haproxy_ip}
+
+[all:vars]
 ansible_ssh_user=${ansible_user}
 ansible_ssh_private_key_file=${private_key}

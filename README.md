@@ -21,7 +21,7 @@ Automatically deploys any number of lab servers with tools in place to run Docke
 # Post Deploy
 
 * Verify deployment by checking links in `./ansible/files/deployment_name/lab-server-info.txt`
-* Use the `./ansible/files/deployment_name/lab-server-info.txt` file to distrubute access info to students. Make sure to provide them with the generated private ssh key for this deployment located under `./ansible/files/deployment_name/deploymentname-private-key.pem`.
+* Use the `./ansible/files/deployment_name/lab-server-info.txt` file to distribute access info to students. Make sure to provide them with the generated private ssh key for this deployment located under `./ansible/files/deployment_name/deploymentname-private-key.pem`.
 
 # Accessing the Environments
 
@@ -32,3 +32,11 @@ Automatically deploys any number of lab servers with tools in place to run Docke
 # Delete the lab environments
 
 * From within the `make environment` container, run `make teardown`
+
+#Ansible Command Examples
+
+# Only run the playbook against the group "haproxy_server"
+`ansible-playbook -i inventory/yourbranchname/yourbranchname-inventory main.yml --limit "haproxy_server`
+
+# Only run the playbook against the tag "labs"
+`ansible-playbook -i inventory/yourbranchname/yourbranchname-inventory main.yml --tags "labs"`

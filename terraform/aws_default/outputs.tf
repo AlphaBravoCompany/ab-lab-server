@@ -18,14 +18,28 @@ resource "local_file" "k3s_inventory" {
   content  = templatefile("../templates/inventory.tmpl", {
       server_name = aws_instance.lab-server[*].tags.Name,
       lab_server_ips = aws_eip.eip[*].public_ip,
+      haproxy_name = aws_instance.haproxy-server.tags.Name,
+      haproxy_ip = aws_eip.haproxy-eip.public_ip,
       private_key = "./files/${var.deployment_name}/${var.deployment_name}-private-key.pem",
       ansible_user = var.ansible_aws_user,
-      deployment_name = var.deployment_name
+      deployment_name = var.deployment_name,
       environment_domain = var.environment_domain
       }
     )
   filename = "../../ansible/inventory/${var.deployment_name}/${var.deployment_name}-inventory"
   depends_on = [aws_instance.lab-server]
+}
+
+resource "local_file" "haproxy_config" {
+  content  = templatefile("../templates/haproxy.cfg.tmpl", {
+      server_name = aws_instance.lab-server[*].tags.Name,
+      lab_server_ips = aws_eip.eip[*].public_ip,
+      deployment_name = var.deployment_name,
+      environment_domain = var.environment_domain
+      }
+    )
+  filename = "../../ansible/files/${var.deployment_name}/haproxy.cfg"
+  depends_on = [aws_instance.haproxy-server]
 }
 
 resource "local_file" "ansible_all" {

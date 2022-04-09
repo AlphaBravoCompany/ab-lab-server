@@ -3,11 +3,11 @@ This page lists all lab server links for this deployment.
 %{ for server in lab_servers ~}
 Hostname: ${server}.${environment_domain}
 Code-Server:
-https://${server}.${environment_domain}:11443
+https://code.${server}.${environment_domain}
 Rancher:
-https://${server}.${environment_domain}:12443
+https://rancher.${server}.${environment_domain}
 Portainer:
-https://${server}.${environment_domain}:9000
+https://portainer.${server}.${environment_domain}
 SSH:
 ssh -i ${deployment_name}-private-key.pem ${addl_admin_user}@${server}.${environment_domain}
 

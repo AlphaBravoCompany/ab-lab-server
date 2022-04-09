@@ -12,6 +12,6 @@ services:
       - /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/privkey.pem:/certs/privkey.pem
       - /ab/misc/portainer/portainer-password.txt:/portainer-password.txt
     ports:
-      - "9000:9000"
+      - "9000:9443"
     restart: unless-stopped
     command: '--admin-password-file=/portainer-password.txt --ssl --sslcert /certs/fullchain.pem --sslkey /certs/privkey.pem'
