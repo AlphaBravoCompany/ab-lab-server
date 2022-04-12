@@ -13,7 +13,7 @@ aws:
     #instance_image: ami-0dd76f917833aac4b #ubuntu 20.04 us-east-1
     instance_image: ami-0b29b6e62f2343b46 #ubuntu 20.04 us-east-2
     lab_instance_size: m5a.2xlarge
-    server_count: "1"
+    server_count: "2"
     spot_price: ".45"
 
 cloudflare:
@@ -36,9 +36,9 @@ terraform:
 digitalocean:
     region: "nyc3"
     droplet_image: "ubuntu-20-04-x64"
-    #lab_droplet_size: "s-8vcpu-16gb-intel" #production only
-    lab_droplet_size: "s-4vcpu-8gb"
+    lab_droplet_size: "s-8vcpu-16gb-intel" #production only
+    #lab_droplet_size: "s-4vcpu-8gb"
     provider_version: "1.22.2"
     provider_source: "digitalocean/digitalocean"
-    server_count: "1"
+    server_count: "3"
 

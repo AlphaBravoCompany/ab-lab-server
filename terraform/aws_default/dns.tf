@@ -30,7 +30,7 @@ resource "cloudflare_record" "haproxy_dns" {
 resource "cloudflare_record" "code_dns" {
   count  = var.aws_server_count
   zone_id = var.cloudflare_zone_id
-  name   = "code.${element(aws_instance.lab-server.*.tags.Name, count.index)}"
+  name   = "code-${element(aws_instance.lab-server.*.tags.Name, count.index)}"
   value  = aws_eip.haproxy-eip.public_ip
   type   = "A"
   ttl = 600
@@ -40,7 +40,7 @@ resource "cloudflare_record" "code_dns" {
 resource "cloudflare_record" "rancher_dns" {
   count  = var.aws_server_count
   zone_id = var.cloudflare_zone_id
-  name   = "rancher.${element(aws_instance.lab-server.*.tags.Name, count.index)}"
+  name   = "rancher-${element(aws_instance.lab-server.*.tags.Name, count.index)}"
   value  = aws_eip.haproxy-eip.public_ip
   type   = "A"
   ttl = 600
@@ -50,7 +50,7 @@ resource "cloudflare_record" "rancher_dns" {
 resource "cloudflare_record" "portainer_dns" {
   count  = var.aws_server_count
   zone_id = var.cloudflare_zone_id
-  name   = "portainer.${element(aws_instance.lab-server.*.tags.Name, count.index)}"
+  name   = "portainer-${element(aws_instance.lab-server.*.tags.Name, count.index)}"
   value  = aws_eip.haproxy-eip.public_ip
   type   = "A"
   ttl = 600

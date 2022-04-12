@@ -1,3 +1,4 @@
+# Testing HAProxy Config: https://www.haproxy.com/blog/testing-your-haproxy-configuration/
 global
         log /dev/log    local0
         log /dev/log    local1 notice
@@ -31,47 +32,28 @@ defaults
         stats auth admin:password
         stats uri  /stats
 
-frontend http_in
-        mode http
-        option httplog
-        bind *:80
-
 frontend https_in
-        mode tcp
-        option tcplog
-        bind *:443
+        mode http
+        bind *:80
+        bind *:443 ssl crt /etc/haproxy/ablabs_io_combo.pem
         acl tls req.ssl_hello_type 1
-        tcp-request inspect-delay 5s
-        tcp-request content accept if tls
+        http-request redirect scheme https unless { ssl_fc }
         
 %{ for index, name in server_name ~}
-        acl code.${name}.${environment_domain} req.ssl_sni -i code.${name}.${environment_domain}
-        acl rancher.${name}.${environment_domain} req.ssl_sni -i rancher.${name}.${environment_domain}
-        acl portainer.${name}.${environment_domain} req.ssl_sni -i portainer.${name}.${environment_domain}
-        
-        use_backend code_${name} if code.${name}.${environment_domain}
-        use_backend rancher_${name} if rancher.${name}.${environment_domain}
-        use_backend portainer_${name} if portainer.${name}.${environment_domain}
+        use_backend code_${name} if { hdr(host) code-${name}.${environment_domain} }
+        use_backend rancher_${name} if { hdr(host) rancher-${name}.${environment_domain} }
+        use_backend portainer_${name} if { hdr(host) portainer-${name}.${environment_domain} }
 
 %{ endfor ~}
 
 %{ for index, name in server_name ~}
 backend code_${name}
-        mode tcp
-        option tcplog
-        option ssl-hello-chk
-        server server1 ${lab_server_ips[index]}:11443 check
+        server ${name} ${lab_server_ips[index]}:11443 check ssl verify none
 
 backend rancher_${name}
-        mode tcp
-        option tcplog
-        option ssl-hello-chk
-        server server1 ${lab_server_ips[index]}:12443 check
+        server ${name} ${lab_server_ips[index]}:12443 check ssl verify none
 
 backend portainer_${name}
-        mode tcp
-        option tcplog
-        option ssl-hello-chk
-        server server1 ${lab_server_ips[index]}:9000 check
+        server ${name} ${lab_server_ips[index]}:9000 check ssl verify none
 
 %{ endfor ~}
