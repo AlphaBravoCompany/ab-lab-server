@@ -1,0 +1,29 @@
+version: '3'
+services:
+
+  certbot:
+    image: certbot/dns-route53
+    volumes:
+      - /ab/certbot:/etc/letsencrypt
+      - /ab/certbot/nginx.conf:/etc/nginx/nginx.conf
+      - /ab/certbot/aws-config:/root/.aws/config
+    command: >-
+      certonly --dns-route53
+      --dns-route53-propagation-seconds 60
+      --email {{ letsencrypt_email }}
+      --agree-tos --no-eff-email
+      --force-renewal
+      -d {{ inventory_hostname }}
+      -d *.{{ inventory_hostname }}
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: "always"
+    volumes:
+      - /ab/certbot/nginx.conf:/etc/nginx/nginx.conf
+      - /ab/certbot:/etc/letsencrypt
+
+volumes:
+  certbot_etc:

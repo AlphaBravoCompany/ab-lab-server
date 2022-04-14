@@ -1,24 +1,44 @@
 ---
+- name: Set a hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Add hostname to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.0\.1[ \t]+localhost'
+    line: '127.0.0.1 localhost {{ ansible_hostname }} {{ ansible_hostname }}.{{ environment_domain }}'
+    state: present
+  tags: hostsfile
+
+- name: Add local hostname to 127.0.1.1 in /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1.*'
+    line: '127.0.1.1 {{ ansible_hostname }} {{ ansible_hostname }}.{{ environment_domain }}'
+    insertafter: '^127\.0\.0\.1.*'
+  tags: hostsfile
+
 - name: Create ab/certbot directory
   ansible.builtin.file:
     path: /ab/certbot
     state: directory
     mode: '0755'
-  tags: certbot
+  tags: certbot-haproxy
 
 - name: Create ab/certs/live directory
   ansible.builtin.file:
     path: /ab/certs/live
     state: directory
     mode: '0755'
-  tags: certbot
+  tags: certbot-haproxy
 
 - name: Create ab/certs/archive directory
   ansible.builtin.file:
     path: /ab/certs/archive
     state: directory
     mode: '0755'
-  tags: certbot
+  tags: certbot-haproxy
 
 - name: Copy nginx config file
   template:
@@ -27,7 +47,7 @@
     owner: root
     group: root
     mode: 0755
-  tags: certbot
+  tags: certbot-haproxy
 
 - name: Copy Cloudflare docker-compose config file
   template:
@@ -36,7 +56,7 @@
     owner: root
     group: root
     mode: 0755
-  tags: certbot
+  tags: certbot-haproxy
   when: dns_service == "cloudflare"
 
 - name: Copy Route53 docker-compose config file
@@ -46,7 +66,7 @@
     owner: root
     group: root
     mode: 0755
-  tags: certbot
+  tags: certbot-haproxy
   when: dns_service == "route53"
 
 - name: Copy cloudflare.ini file
@@ -56,7 +76,7 @@
     owner: root
     group: root
     mode: '0600'
-  tags: certbot
+  tags: certbot-haproxy
   when: dns_service == "cloudflare"
 
 - name: Copy aws-config file
@@ -66,7 +86,7 @@
     owner: root
     group: root
     mode: '0600'
-  tags: certbot
+  tags: certbot-haproxy
   when: dns_service == "route53"
 
 - name: Copy ssl-dhparams.pem file
@@ -76,46 +96,68 @@
     owner: root
     group: root
     mode: '0755'
-  tags: certbot
+  tags: certbot-haproxy
 
 - name: Check if cert has already been created
   stat:
     path: /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem
   register: certbot
-  tags: certbot
+  tags: certbot-haproxy
 
 - name: Create and start certbot container
   community.docker.docker_compose:
     project_src: /ab/certbot
   register: output
-  tags: certbot
+  tags: certbot-haproxy
   when: certbot.stat.exists == false
 
 - name: Waiting approx 90 seconds for certificate to be created. (It's how the certbot container works, what do you want from me?)
   wait_for:
     path: /ab/certbot/live/{{ ansible_hostname }}.{{ environment_domain }}/fullchain.pem
     state: present
-  tags: certbot
+  tags: certbot-haproxy
   when: certbot.stat.exists == False
 
 - name: copy certbot/live
   ansible.builtin.command: cp -r /ab/certbot/live /ab/certs
-  tags: certbot
+  tags: certbot-haproxy
   when: certbot.stat.exists == false
 
 - name: copy certbot/archive
   ansible.builtin.command: cp -r /ab/certbot/archive /ab/certs
-  tags: certbot
+  tags: certbot-haproxy
   when: certbot.stat.exists == false
 
-- name: Remove certbot container
+- name: combine cert.pem and privkey.pem
+  ansible.builtin.shell: 
+    cmd: cat cert.pem privkey.pem | tee cert-bundle.pem
+    chdir: /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/
+  tags: certbot-haproxy
+
+- name: Create /etc/haproxy directory
+  ansible.builtin.file:
+    path: /etc/haproxy
+    state: directory
+    mode: '0777'
+  tags: certbot-haproxy
+
+- name: Copy cert-bundle.pem file
+  ansible.builtin.copy:
+    remote_src: yes
+    src: /ab/certs/live/{{ ansible_hostname }}.{{ environment_domain }}/cert-bundle.pem
+    dest: /etc/haproxy/cert-bundle.pem
+    owner: root
+    group: root
+    mode: '0755'
+  tags: certbot-haproxy
+
+- name: Stop certbot container
   community.docker.docker_compose:
     project_src: /ab/certbot
     build: no
     state: present
     stopped: yes
-  tags: certbot, certbot-compose-down
-  when: certbot.stat.exists == False
+  tags: certbot-haproxy, certbot-compose-down
 
 - name: Remove certbot container
   community.docker.docker_compose:
@@ -123,20 +165,11 @@
     build: no
     state: absent
   register: output
-  tags: certbot, certbot-compose-down
+  tags: certbot-haproxy, certbot-compose-down
   when: certbot.stat.exists == False
 
 - name: Remove certbot directory to hide our tracks, err, for cleanliness...
   ansible.builtin.file:
     path: /ab/certbot
     state: absent
-  tags: certbot
-
-- name: Change ownership of cert files
-  ansible.builtin.file:
-    path: /ab/certs
-    owner: "{{ addl_admin_user }}"
-    group: "{{ addl_admin_user }}"
-    mode: '0755'
-    recurse: yes
-  tags: certbot
+  tags: certbot-haproxy

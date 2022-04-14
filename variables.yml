@@ -1,6 +1,4 @@
 ---
-deployment_name: "test123" #optional. If not set, will use branch name.
-
 ansible:
     do_user: "root"
     aws_user: "ubuntu"
@@ -9,12 +7,12 @@ ansible:
 aws:
     bucket_name: "alphabravo-k8s-terraform-states-alphabravogovt"
     bucket_region: "us-east-1"
-    region: "us-east-2"
-    #instance_image: ami-0dd76f917833aac4b #ubuntu 20.04 us-east-1
-    instance_image: ami-0b29b6e62f2343b46 #ubuntu 20.04 us-east-2
-    lab_instance_size: m5a.2xlarge
-    server_count: "2"
-    spot_price: ".45"
+    region: "us-east-1"
+    instance_image: ami-0dd76f917833aac4b #ubuntu 20.04 us-east-1
+    #instance_image: ami-0b29b6e62f2343b46 #ubuntu 20.04 us-east-2
+    lab_instance_size: m5n.2xlarge
+    server_count: "2" #Number of student lab servers you need
+    spot_price: ".50"
 
 cloudflare:
     provider_source: "cloudflare/cloudflare"
@@ -24,6 +22,9 @@ code_server:
 
 environment:
     systemd_directory: "/etc/systemd/system"
+
+dns:
+    service: "cloudflare" #Options are cloudflare, route53, none
 
 docker:
     docker_compose_version: "1.29.2"
@@ -42,3 +43,5 @@ digitalocean:
     provider_source: "digitalocean/digitalocean"
     server_count: "3"
 
+haproxy:
+    server_count: "1"

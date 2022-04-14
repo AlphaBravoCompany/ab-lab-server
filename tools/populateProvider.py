@@ -38,6 +38,7 @@ aws_secret_key = secrets_data['aws']['secret_key']
 aws_bucket_name = variables_data['aws']['bucket_name']
 aws_region = variables_data['aws']['region']
 aws_bucket_region = variables_data['aws']['bucket_region']
+haproxy_server_count = variables_data['haproxy']['server_count']
 
 
 ## Modify PROVIDER.TF file
@@ -62,6 +63,7 @@ provider_data = provider_data.replace('replace-me-aws-secret-key', aws_secret_ke
 provider_data = provider_data.replace('replace-me-aws-bucket-name', aws_bucket_name)
 provider_data = provider_data.replace('replace-me-aws-region', aws_region)
 provider_data = provider_data.replace('replace-me-aws-bucket-region', aws_bucket_region)
+provider_data = provider_data.replace('replace-me-haproxy_server_count', haproxy_server_count)
 
 ## Write data to the provider file.
 with open(provider_file, 'w') as f:

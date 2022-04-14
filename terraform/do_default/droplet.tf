@@ -19,6 +19,20 @@ resource "local_file" "ssh_key" {
 }
 
 # Lab Environment Deployment.
+module "haproxy-server" {
+    source = "../../modules/terraform/do/droplet"
+
+    droplet_name       = "${var.deployment_name}-haproxy"
+    droplet_image      = var.digitalocean_droplet_image
+    droplet_size       = var.digitalocean_lab_droplet_size
+    do_region          = var.digitalocean_region
+    ssh_keys           = concat("${var.digitalocean_ssh_key}", ["${digitalocean_ssh_key.lab_server_ssh_keys.fingerprint}"])
+    resize_disk        = false
+    droplet_tags       = [digitalocean_tag.lab-server.id]
+    vpc_uuid           = digitalocean_vpc.vpc.id
+}
+
+
 module "lab-server" {
     source = "../../modules/terraform/do/droplet"
     count  = var.digitalocean_server_count #This should be at least equal to number of students in the class

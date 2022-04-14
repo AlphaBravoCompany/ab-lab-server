@@ -5,6 +5,7 @@ terraform {
       version = "replace-me-digitalocean-provider-version"
     }
     cloudflare = {
+      source = "replace-me-cloudflare-enable"
       source = "replace-me-cloudflare-provider-source"
     }
   }

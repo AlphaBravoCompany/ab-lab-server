@@ -14,7 +14,35 @@ resource "local_file" "ssh_key" {
   file_permission = "0600"
 }
 
-# Lab Environment Deployment.
+resource "aws_eip" "eip" {
+  instance = "${element(aws_spot_instance_request.lab-server.*.spot_instance_id, count.index)}"
+  count    = var.aws_server_count
+  vpc      = true
+}
+
+resource "aws_eip" "haproxy-eip" {
+  instance = aws_instance.haproxy-server.id
+  vpc      = true
+}
+
+resource "aws_instance" "haproxy-server" {
+  ami           = var.aws_instance_image
+  instance_type = "m5a.large"
+  key_name = aws_key_pair.lab_server_key.key_name
+  subnet_id = "${aws_subnet.public.id}"
+  associate_public_ip_address = true
+  #user_data = "${file("../templates/userdata.tpl")}"
+  root_block_device {
+    volume_size = "100"
+  }
+
+  vpc_security_group_ids = ["${aws_security_group.allow_all.id}"]
+
+  tags = {
+    Name = "${var.deployment_name}-haproxy"
+  }
+}
+
 resource "aws_spot_instance_request" "lab-server" {
   wait_for_fulfillment = true
   count         = var.aws_server_count
@@ -32,7 +60,7 @@ resource "aws_spot_instance_request" "lab-server" {
   vpc_security_group_ids = ["${aws_security_group.allow_all.id}"]
 
   provisioner "local-exec" {
-    command = "aws ec2 create-tags --resources ${self.spot_instance_id} --tags Key=Name,Value=${var.deployment_name}-lab${count.index + 1} --region ${var.aws_region}"
+    command = "AWS_ACCESS_KEY_ID=${var.aws_access_key} AWS_SECRET_ACCESS_KEY=${var.aws_secret_key} aws ec2 create-tags --resources ${self.spot_instance_id} --tags Key=Name,Value=${var.deployment_name}-lab${count.index + 1} --region ${var.aws_region}"
   }
 
   tags = {

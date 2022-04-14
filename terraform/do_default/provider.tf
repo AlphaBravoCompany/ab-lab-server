@@ -25,3 +25,9 @@ provider "digitalocean" {
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
+
+provider "aws" {
+  region     = "replace-me-aws-region"
+  access_key = "replace-me-aws-access-key"
+  secret_key = "replace-me-aws-secret-key"
+}

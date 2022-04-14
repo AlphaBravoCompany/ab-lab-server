@@ -1,19 +1,3 @@
-# output "lab_server_name" {
-#    value = module.lab-server[*].droplet_name
-#}
-
-#output "lab_server_public_ips" {
-#    value = module.lab-server[*].droplet_ipv4_address
-#}
-#
-#output "lab_server_private_ips" {
-#    value = module.lab-server[*].droplet_ipv4_address_private
-#}
-#
-#output "vpc_uuid" {
-#    value = digitalocean_vpc.vpc.id
-#}
-
 resource "local_file" "k3s_inventory" {
   content  = templatefile("../templates/inventory.tmpl", {
       server_name = aws_instance.lab-server[*].tags.Name,
@@ -59,6 +43,7 @@ resource "local_file" "ansible_all" {
       cloudflare_email = var.cloudflare_email,
       portainer_password = var.portainer_password,
       rancher_password = var.rancher_password
+      dns_service = var.dns_service
       }
     )
   filename = "../../ansible/inventory/${var.deployment_name}/group_vars/all.yml"
@@ -79,6 +64,15 @@ resource "local_file" "cloudflare_ini" {
       }
     )
   filename = "../../ansible/files/${var.deployment_name}/cloudflare.ini"
+}
+
+resource "local_file" "aws_config" {
+  content  = templatefile("../templates/aws-config.tmpl", {
+      aws_access_key_id = var.aws_access_key
+      aws_secret_access_key = var.aws_secret_key
+      }
+    )
+  filename = "../../ansible/files/${var.deployment_name}/aws-config"
 }
 
 resource "local_file" "lab_server_info" {

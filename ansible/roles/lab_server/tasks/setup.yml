@@ -151,35 +151,35 @@
   ansible.builtin.file:
     path: /ab/misc/ab-dotfiles
     state: directory
-    owner: "{{ addl_admin_user }}"
-    group: "{{ addl_admin_user }}"
+    owner: "root"
+    group: "root"
     mode: '0755'
   when: dotfiles.stat.exists == false
-  tags: lab-server
+  tags: lab-server, ab-dotfiles
 
 - name: Clone dotfiles repo
   ansible.builtin.git:
     repo: "{{ git_dotfiles_url }}"
     dest: /ab/misc/ab-dotfiles
   when: dotfiles.stat.exists == false
-  tags: lab-server
+  tags: lab-server, ab-dotfiles
 
 - name: Change owner of /ab/misc/ab-dotfiles folder
   shell: chown -R abtraining:abtraining /ab/misc/ab-dotfiles
-  tags: lab-server
+  tags: lab-server, ab-dotfiles
 
 - name: Run dotfiles install
   become: true
   become_user: "{{ addl_admin_user }}"
   shell: cd /ab/misc/ab-dotfiles && sudo chmod +x install.sh && ./install.sh
   when: dotfiles.stat.exists == false
-  tags: lab-server
+  tags: lab-server, ab-dotfiles
 
 - name: Create ab/labs directory
   ansible.builtin.file:
     path: /ab/labs
     state: directory
-    owner: "{{ addl_admin_user }}"
-    group: "{{ addl_admin_user }}"
+    owner: "root"
+    group: "root"
     mode: '0755'
   tags: lab-server
