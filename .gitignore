@@ -1,4 +1,6 @@
 # Exclude these files
+.gitignore
+variables.yml
 *.tfstate*
 *.tfvars
 *.pem

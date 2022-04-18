@@ -6,7 +6,7 @@ networks:
 services:
 
     development:
-        image: registry.gitlab.com/alphabravocompany/coder-dev:latest
+        image: abops-docker:latest
 
         cap_add:
             - NET_ADMIN
@@ -22,6 +22,6 @@ services:
         volumes:
             - type: bind
               source: ./
-              target: /home/coder/ab
-        working_dir: /home/coder/ab
+              target: /home/abops/ab
+        working_dir: /home/abops/ab
         command: tail -f /dev/null
