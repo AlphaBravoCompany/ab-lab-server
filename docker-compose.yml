@@ -6,7 +6,7 @@ networks:
 services:
 
     development:
-        image: abops-docker:latest
+        image: ghcr.io/alphabravocompany/abops-docker:latest
 
         cap_add:
             - NET_ADMIN
