@@ -34,9 +34,6 @@ VARIABLES_FILE = variables.yml
 SECRETS_FILE = secrets.yml
 GET_DATE := $(shell date +%FT%T%Z)
 CERT_DATE := $(shell date +%Y%m%d)
-CERT_DIR := $(shell yq -r .sealedsecrets.directory variables.yml)
-CERT_NAME := $(shell yq -r .sealedsecrets.name variables.yml)
-CERT_NS := $(shell yq -r .sealedsecrets.namespace variables.yml)
 BUFFER_ITERATIONS = 6
 BUFFER_SLEEP = 10
 
