@@ -1,3 +1,4 @@
+# This file is intended to be committed to your internal private git repo and container limited "private" information.
 ---
 ansible:
     do_user: "root"
@@ -5,7 +6,7 @@ ansible:
     addl_admin_user: "abtraining"
 
 aws:
-    bucket_name: "alphabravo-k8s-terraform-states-alphabravogovt"
+    bucket_name: "your-bucket-name"
     bucket_region: "us-east-1"
     region: "us-east-1"
     instance_image: ami-0dd76f917833aac4b #Ubuntu 20.04 us-east-1. For other regions, filter by version "20.04 LTS" here https://cloud-images.ubuntu.com/locator/ec2/
@@ -36,11 +37,10 @@ terraform:
 digitalocean:
     region: "nyc3"
     droplet_image: "ubuntu-20-04-x64"
-    lab_droplet_size: "s-8vcpu-16gb-intel" #production only
-    #lab_droplet_size: "s-4vcpu-8gb"
+    lab_droplet_size: "s-8vcpu-16gb-intel"
     provider_version: "1.22.2"
     provider_source: "digitalocean/digitalocean"
-    server_count: "2"
+    server_count: "1"
 
 haproxy:
     server_count: "1" #Do not change this

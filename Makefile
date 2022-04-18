@@ -23,7 +23,7 @@ DEV_NAME = development
 DEV_EXEC = $(COMPOSE_EXEC) $(DEV_NAME)
 REGISTRY = ghcr.io/alphabravocompany
 LOCAL_TAG = test
-REMOTE_TAG = master
+REMOTE_TAG = latest
 
 KUBECONFIG = "ansible/files/$(BRANCH)/kubeconfig/config"
 KUBE = kubectl --kubeconfig=$(KUBECONFIG)
