@@ -21,10 +21,11 @@ These lab server deployments are to be used with the AlphaBravo ABLabs Training 
 
 * Clone this repo
 * `cd ab-lab-server`
-* Copy `secrets.yml.dist` to `secrets.yml` and fill in with required fields
-* Copy `variables.yml.dist` to `variables.yml` and fill in with required fields (number of servers desired, size of servers etc)
-* Type `make environment` and this will drop you into a Docker container with all the required tools (Ansible, Terraform, etc)
-* Type `make setup-aws`
+* Copy `secrets.yml.dist` to `secrets.yml` and fill in with required fields. Annotations in the `secrets.yml.dist` file explain what each field is for.
+* Copy `variables.yml.dist` to `variables.yml` and fill in with required fields (number of servers desired, size of servers etc). Annotations in the `variables.yml.dist` file explain what each field is for.
+* Type `make environment` and this will drop you into a Docker container with all the required tools (Ansible, Terraform, etc).
+* Type `make setup-aws`. Additional options for `aws-spot` and `digitalocean` will be defined in the future once they are fully tested.
+
 
 ## Additional Deploy Options
 
@@ -36,15 +37,27 @@ There are currently a few options available for how / where to deploy the lab co
 
 ### Deploy on AWS-Spot
 
+Coming Soon
+
 ### Deploy on DigitalOcean
+
+Coming Soon
 
 ### Deploy DNS on Route53
 
+Changing the `dns.service` option in `variables.yml` file will switch from the default `cloudflare` DNS deployment to `route53` DNS.
+
 ### Deploy with no DNS and only Host File records
 
-### Deploy with User Provided Certs (Coming Soon)
+Coming Soon
 
-### Deploy with auto generated, self-signed certs (Coming Soon)
+### Deploy with User Provided Certs
+
+Coming Soon
+
+### Deploy with auto generated, self-signed certs
+
+Coming Soon
 
 ## Post Deploy
 

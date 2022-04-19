@@ -82,14 +82,14 @@
   retries: 100
   until: apt_action is success or ('Failed to lock apt for exclusive operation' not in apt_action.msg and '/var/lib/dpkg/lock' not in apt_action.msg)
 
-- name: Copy certificate file (should be the combined .crt and .key file in .pem format)
-  ansible.builtin.copy:
-    src: files/ablabs_io_combo.pem
-    dest: /etc/haproxy/ablabs_io_combo.pem
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: '0777'
-  tags: haproxy
+# - name: Copy certificate file (should be the combined .crt and .key file in .pem format)
+#   ansible.builtin.copy:
+#     src: files/ablabs_io_combo.pem
+#     dest: /etc/haproxy/ablabs_io_combo.pem
+#     owner: "{{ ansible_user }}"
+#     group: "{{ ansible_user }}"
+#     mode: '0777'
+#   tags: haproxy
 
 - name: Backup existing haproxy.cfg
   ansible.builtin.command: mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig
